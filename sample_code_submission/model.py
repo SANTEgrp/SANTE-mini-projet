@@ -10,6 +10,16 @@ import pickle
 import numpy as np   # We recommend to use numpy arrays
 from os.path import isfile
 from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import NearestNeighbors
+from sklearn.neural_network import MLPClassifier
+from sklearn.neural_network import MLPRegressor
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors.nearest_centroid import NearestCentroid
+from sklearn.ensemble import ExtraTreesClassifier
+
 
 class model:
     def __init__(self):
@@ -21,8 +31,8 @@ class model:
         self.num_feat=1
         self.num_labels=1
         self.is_trained=False
-        self.mymodel=GaussianNB()
-
+        self.mymodel=ExtraTreesClassifier()
+        
     def fit(self, X, y):
         '''
         This function should train the model parameters.
