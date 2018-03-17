@@ -8,18 +8,14 @@ You must supply at least 4 methods:
 '''
 import pickle
 import numpy as np   # We recommend to use numpy arrays
+from sys import argv
 from os.path import isfile
 from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
+from sklearn import svm
+from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import NearestNeighbors
-from sklearn.neural_network import MLPClassifier
-from sklearn.neural_network import MLPRegressor
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neighbors.nearest_centroid import NearestCentroid
-from sklearn.ensemble import ExtraTreesClassifier
-
+from sklearn.metrics import accuracy_score
+#from BestParametres import BestParametres
 
 class model:
     def __init__(self):
@@ -31,7 +27,19 @@ class model:
         self.num_feat=1
         self.num_labels=1
         self.is_trained=False
-        self.mymodel=ExtraTreesClassifier()
+        #self.params = BestParametres()
+        #pour trouver les meilleurs Parametres
+        
+        #self.estimators = self.params.BestParam()
+        #pour trouver aussi les meilleurs parametres
+        
+        #self.mymodel=RandomForestClassifier(n_estimators = self.estimators[0], max_features = self.estimators[1], bootstrap = self.estimators[2])
+        #Pour trouver les meilleurs parametres (car tres long a executer)
+        
+        
+        
+        self.mymodel = RandomForestClassifier(n_estimators = 100, max_features = "sqrt", bootstrap = True)
+        #Ces parametres ont ete trouves en executant en local BestParametres.py
         
     def fit(self, X, y):
         '''
@@ -60,25 +68,10 @@ class model:
             self.is_trained=True
 
     def predict(self, X):
-        '''
-        This function should provide predictions of labels on (test) data.
-        Here we just return zeros...
-        Make sure that the predicted values are in the correct format for the scoring
-        metric. For example, binary classification problems often expect predictions
-        in the form of a discriminant value (if the area under the ROC curve it the metric)
-        rather that predictions of the class labels themselves. For multi-class or multi-labels
-        problems, class probabilities are often expected if the metric is cross-entropy.
-        Scikit-learn also has a function predict-proba, we do not require it.
-        The function predict eventually can return probabilities.
-        '''
-        num_test_samples = len(X)
-        if X.ndim>1: num_feat = len(X[0])
-        print("PREDICT: dim(X)= [{:d}, {:d}]").format(num_test_samples, num_feat)
-        if (self.num_feat != num_feat):
-            print("ARRGH: number of features in X does not match training data!")
-        print("PREDICT: dim(y)= [{:d}, {:d}]").format(num_test_samples, self.num_labels)
-        y = self.mymodel.predict_proba(X)[:,1]
-        return y
+  
+        return self.mymodel.predict_proba(X)[:,1]
+    
+    
 
     def save(self, path="./"):
         pickle.dump(self, open(path + '_model.pickle', "w"))
@@ -90,4 +83,3 @@ class model:
                 self = pickle.load(f)
             print("Model reloaded from: " + modelfile)
         return self
-
