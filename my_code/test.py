@@ -10,28 +10,6 @@ from Prepro import Preprocessor
 
 class Preprocessor(BaseEstimator):
 
-    def __init__(self):
-
-        self.transformer = VarianceThreshold(threshold=(.8 * (1 - .8)))
-    print("la valeur de self transformer est "+str(self.transformer)) 
-
-    def fit(self, X, y=None):
-
-        data= self.transformer.fit(X, y)
-    #affichage de la valeur du data
-    print ("la valeur de fit est"+ str(data))
-    #la valeur retournée par la fonction fit
-    return data 
-  
-  
-    def fit_transform(self, X, y=None):
-
-        return self.transformer.fit_transform(X,y)
-
-
-    def transform(self, X, y=None):
-
-        return self.transformer.transform(X)
     
 if __name__=="__main__":
 
