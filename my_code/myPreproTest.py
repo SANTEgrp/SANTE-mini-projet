@@ -7,25 +7,19 @@ Ceci est un script temporaire.
 from data_manager import DataManager # such as DataManager
 from myPrepro import Preprocessor 
 
-
-
-
-    
-
-
+#Récupération des fichiers nécessaires
 input_dir = "../public_data"
 output_dir = "../sample_results_submission"
     
 
-basename = 'Opioids'
+basename = 'Opioids' 
 
-Data = DataManager(basename, input_dir) # Load data
+Data = DataManager(basename, input_dir) # Création des données
 
 print("Data non modifiées")
 print Data
     
-
-Prepro = Preprocessor()
+#Affichage des données avant modification
 import matplotlib.pyplot as plt
 X = Data.data['X_train']
 Y = Data.data['Y_train']
@@ -35,8 +29,9 @@ plt.ylabel('DonneesY')
 plt.show()
 
 
-    # Preprocess on the data and load it back into D
+Prepro = Preprocessor() #Initialisation
 
+#Preprocessing sur les données
 Data.data['X_train'] = Prepro.fit_transform(Data.data['X_train'], Data.data['Y_train'])
 
 Data.data['X_valid'] = Prepro.transform(Data.data['X_valid'])
@@ -44,8 +39,7 @@ Data.data['X_valid'] = Prepro.transform(Data.data['X_valid'])
 Data.data['X_test'] = Prepro.transform(Data.data['X_test'])
   
 
-    # Here show something that proves that the preprocessing worked fine
-
+#Affichage des données modifiées + petit graphique pour que ce soit visible
 print("Data modifiées après le Préprocessing")
 print Data
 
