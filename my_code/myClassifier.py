@@ -17,6 +17,8 @@ from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from MyBestParametres import BestParametres
+from myPrepro import Preprocessor
+from sklearn.pipeline import Pipeline
 
 class model:
     def __init__(self):
@@ -27,6 +29,7 @@ class model:
         self.num_feat=1
         self.num_labels=1
         self.is_trained=False
+        
         '''
         Ces trois initialisations sont utlisées quand on ne soumet pas car Codalab
         ne prends pas en charge le "MyBestParametres.py"
@@ -35,13 +38,17 @@ class model:
         '''
         #self.params = BestParametres()
         #self.estimators = self.params.BestParam()
-        #self.mymodel=RandomForestClassifier(n_estimators = self.estimators[0], max_features = self.estimators[1], bootstrap = self.estimators[2])
+        #algo = RandomForestClassifier(n_estimators = self.estimators[0], max_features = self.estimators[1], bootstrap = self.estimators[2])
         #Ce dernier récupère les trois paramètres donnés par "MyBestParametres.py"
         
         
         
-        self.mymodel = RandomForestClassifier(n_estimators = 100, max_features = "log2", bootstrap = True)
+        
+        algo = RandomForestClassifier(n_estimators = 200, max_features = "log2", bootstrap = True)
         #Ces parametres ont ete trouves en exécutant en local BestParametres.py
+
+        self.mymodel = Pipeline([('preprocessing',Preprocessor()),('class',algo)])
+        #Application du preprocessing
         
     def fit(self, X, y):
        
@@ -74,21 +81,21 @@ if __name__=="__main__":
     
     from data_manager import DataManager
     
-    Data = DataManager(basename, input_dir) #Initialisation des données utilisées par le classifieur
-    print Data #Affichage de test pour voir les données prises sont les bonnes
+    D = DataManager(basename, input_dir) #Initialisation des données utilisées par le classifieur
+    print D #Affichage de test pour voir les données prises sont les bonnes
     
     Classifier = model() #Initialisation du classifieur (ici il prend celui de model)
     
-    XTrain_data = Data.data['X_train'] #Données d'entrainement
-    YTrain_data = Data.data['Y_train'] #Donnés de test
+    XTrain_data = D.data['X_train'] #Données d'entrainement
+    YTrain_data = D.data['Y_train'] #Donnés de test
     fit = Classifier.fit(XTrain_data, YTrain_data) 
     fit #Fit des données d'entrainement et  des données cibles
     
-    YTrainPredict = Classifier.predictProba(Data.data['X_train'])
+    YTrainPredict = Classifier.predictProba(D.data['X_train'])
     
-    YValidPredict = Classifier.predictProba(Data.data['X_valid'])
+    YValidPredict = Classifier.predictProba(D.data['X_valid'])
     
-    YTestPredict = Classifier.predictProba(Data.data['X_test'])
+    YTestPredict = Classifier.predictProba(D.data['X_test'])
     #Création des prédictions sur les données pour calculer les résultats du Classifieur
     
     from my_metric import auc_metric_
@@ -112,7 +119,7 @@ if __name__=="__main__":
     from sklearn.metrics import confusion_matrix
     
     print "Matrice de confusion: "
-    print confusion_matrix(YTrain_data, Classifier.predict(Data.data['X_train']))
+    print confusion_matrix(YTrain_data, Classifier.predict(D.data['X_train']))
     
     
     
