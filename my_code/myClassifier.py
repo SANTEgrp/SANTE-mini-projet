@@ -16,7 +16,7 @@ from sklearn import svm
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from MyBestParametres import BestParametres
+from MyParametresOpti import BestParametres
 from myPrepro import Preprocessor
 from sklearn.pipeline import Pipeline
 
