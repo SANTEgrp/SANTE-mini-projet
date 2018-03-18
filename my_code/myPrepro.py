@@ -16,7 +16,7 @@ class Preprocessor(BaseEstimator):
 
     def __init__(self):
 
-        self.transformer = VarianceThreshold(threshold=(.8 * (1 - .8)))
+        self.transformer = SelectKBest()
 
 
     def fit(self, X, y=None):
