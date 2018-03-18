@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Sample predictive model.
 You must supply at least 4 methods:
@@ -15,61 +16,43 @@ from sklearn import svm
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-#from BestParametres import BestParametres
+from MyBestParametres import BestParametres
 
 class model:
     def __init__(self):
         '''
-        This constructor is supposed to initialize data members.
-        Use triple quotes for function documentation.
+        Initialisation des constructeurs
         '''
         self.num_train_samples=0
         self.num_feat=1
         self.num_labels=1
         self.is_trained=False
+        '''
+        Ces trois initialisations sont utlisées quand on ne soumet pas car Codalab
+        ne prends pas en charge le "MyBestParametres.py"
+        Le self.mymodel permet de choisir les meilleurs paramètres fournis par myBestParamètres.py
+        qui retourne un tableau de taille 3"
+        '''
         #self.params = BestParametres()
-        #pour trouver les meilleurs Parametres
-        
         #self.estimators = self.params.BestParam()
-        #pour trouver aussi les meilleurs parametres
-        
         #self.mymodel=RandomForestClassifier(n_estimators = self.estimators[0], max_features = self.estimators[1], bootstrap = self.estimators[2])
-        #Pour trouver les meilleurs parametres (car tres long a executer)
+        #Ce dernier récupère les trois paramètres donnés par "MyBestParametres.py"
         
         
         
-        self.mymodel = RandomForestClassifier(n_estimators = 100, max_features = "sqrt", bootstrap = True)
-        #Ces parametres ont ete trouves en executant en local BestParametres.py
+        self.mymodel = RandomForestClassifier(n_estimators = 100, max_features = "log2", bootstrap = True)
+        #Ces parametres ont ete trouves en exécutant en local BestParametres.py
         
     def fit(self, X, y):
-        '''
-        This function should train the model parameters.
-        Here we do nothing in this example...
-        Args:
-            X: Training data matrix of dim num_train_samples * num_feat.
-            y: Training label matrix of dim num_train_samples * num_labels.
-        Both inputs are numpy arrays.
-        For classification, labels could be either numbers 0, 1, ... c-1 for c classe
-        or one-hot encoded vector of zeros, with a 1 at the kth position for class k.
-        The AutoML format support on-hot encoding, which also works for multi-labels problems.
-        Use data_converter.convert_to_num() to convert to the category number format.
-        For regression, labels are continuous values.
-        '''
-        self.num_train_samples = len(X)
-        if X.ndim>1: self.num_feat = len(X[0])
-        print("FIT: dim(X)= [{:d}, {:d}]").format(self.num_train_samples, self.num_feat)
-        num_train_samples = len(y)
-        if y.ndim>1: self.num_labels = len(y[0])
-        print("FIT: dim(y)= [{:d}, {:d}]").format(num_train_samples, self.num_labels)
-        if (self.num_train_samples != num_train_samples):
-            print("ARRGH: number of samples in X and y do not match!")
-        else:
-            self.mymodel = self.mymodel.fit(X, y)
-            self.is_trained=True
+       
+       return self.mymodel.fit(X, y)
 
-    def predict(self, X):
+    def predictProba(self, X):
   
         return self.mymodel.predict_proba(X)[:,1]
+    
+    def predict(self, X):
+        return self.mymodel.predict(X)
     
     
 
@@ -90,24 +73,49 @@ if __name__=="__main__":
     basename = "Opioids"
     
     from data_manager import DataManager
-    Data = DataManager(basename, input_dir)
-    print Data
     
-    Classifier = model()
+    Data = DataManager(basename, input_dir) #Initialisation des données utilisées par le classifieur
+    print Data #Affichage de test pour voir les données prises sont les bonnes
     
-    YTrain_data = Data.data['Y_train'] #Fit
-    Classifier.fit(Data.data['X_train'], YTrain_data) #Fit
+    Classifier = model() #Initialisation du classifieur (ici il prend celui de model)
     
-    YTrainPredict = Classifier.predict(Data.data['X_train'])
+    XTrain_data = Data.data['X_train'] #Données d'entrainement
+    YTrain_data = Data.data['Y_train'] #Donnés de test
+    fit = Classifier.fit(XTrain_data, YTrain_data) 
+    fit #Fit des données d'entrainement et  des données cibles
     
-    YValidPredict = Classifier.predict(Data.data['X_valid'])
+    YTrainPredict = Classifier.predictProba(Data.data['X_train'])
     
-    YTestPredict = Classifier.predict(Data.data['X_test'])
+    YValidPredict = Classifier.predictProba(Data.data['X_valid'])
+    
+    YTestPredict = Classifier.predictProba(Data.data['X_test'])
+    #Création des prédictions sur les données pour calculer les résultats du Classifieur
     
     from my_metric import auc_metric_
     
     classifieurAuc = auc_metric_(YTrain_data, YTrainPredict)
+    print "\n"
+    print "Score du classifieur: "
     print classifieurAuc
+    print "\n"
+    #A noter que l'on obtient un score à 0.99 ce qui  semble étrange TODO: A Corriger
+    
+    from sklearn.model_selection import cross_val_score
+    
+    print "Cross Validation: "
+    clf = RandomForestClassifier(n_estimators = 100, max_features = "log2", bootstrap = True)
+    crossval = cross_val_score(clf, XTrain_data, YTrain_data, cv = 3) #Calcule de la cross validation, 3 fois
+    print crossval #Affichage des 3 cross validations
+    print("Precision: %0.4f (+/- %0.04f)" % (crossval.mean(), crossval.std() * 2)) #Affichage de la moyenne des 3 CV +la précision
+    print "\n"
+    
+    from sklearn.metrics import confusion_matrix
+    
+    print "Matrice de confusion: "
+    print confusion_matrix(YTrain_data, Classifier.predict(Data.data['X_train']))
+    
+    
+    
     
     
     
