@@ -5,10 +5,7 @@ Ceci est un script temporaire.
 """
 
 from data_manager import DataManager # such as DataManager
-
-from sklearn.base import BaseEstimator
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import VarianceThreshold
+from Prepro import Preprocessor 
 
 
 class Preprocessor(BaseEstimator):
@@ -47,7 +44,6 @@ if __name__=="__main__":
     Data = DataManager(basename, input_dir) # Load data
 
     print("*** Original data ***")
-
     print Data
     
 
