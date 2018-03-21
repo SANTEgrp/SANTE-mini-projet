@@ -48,10 +48,11 @@ class model:
         #Ces parametres ont ete trouves en exécutant en local BestParametres.py
 
         self.mymodel = Pipeline([('preprocessing',Preprocessor()),('class',algo)])
+        
         #Application du preprocessing
         
     def fit(self, X, y):
-       
+       #Xtr = self.mymodel.fit_transform(X, y)
        return self.mymodel.fit(X, y)
 
     def predictProba(self, X):
@@ -60,6 +61,7 @@ class model:
     
     def predict(self, X):
         return self.mymodel.predict(X)
+        
     
     
 
@@ -81,21 +83,27 @@ if __name__=="__main__":
     
     from data_manager import DataManager
     
-    D = DataManager(basename, input_dir) #Initialisation des données utilisées par le classifieur
-    print D #Affichage de test pour voir les données prises sont les bonnes
+    
     
     Classifier = model() #Initialisation du classifieur (ici il prend celui de model)
     
+    D = DataManager(basename, input_dir) #Initialisation des données utilisées par le classifieur
+    print D #Affichage de test pour voir les données prises sont les bonnes
+    
     XTrain_data = D.data['X_train'] #Données d'entrainement
     YTrain_data = D.data['Y_train'] #Donnés de test
-    fit = Classifier.fit(XTrain_data, YTrain_data) 
-    fit #Fit des données d'entrainement et  des données cibles
+    #fit = Classifier.fit(XTrain_data, YTrain_data) 
+    Classifier.mymodel.fit_transform(XTrain_data, YTrain_data)
+    
+    #fit #Fit des données d'entrainement et  des données cibles
+    
     
     YTrainPredict = Classifier.predictProba(D.data['X_train'])
     
     YValidPredict = Classifier.predictProba(D.data['X_valid'])
     
     YTestPredict = Classifier.predictProba(D.data['X_test'])
+    
     #Création des prédictions sur les données pour calculer les résultats du Classifieur
     
     from my_metric import auc_metric_
@@ -111,7 +119,7 @@ if __name__=="__main__":
     
     print "Cross Validation: "
     clf = RandomForestClassifier(n_estimators = 100, max_features = "log2", bootstrap = True)
-    crossval = cross_val_score(clf, XTrain_data, YTrain_data, cv = 3) #Calcule de la cross validation, 3 fois
+    crossval = cross_val_score(clf, XTrain_data, YTrain_data, cv = 10) #Calcule de la cross validation, 3 fois
     print crossval #Affichage des 3 cross validations
     print("Precision: %0.4f (+/- %0.04f)" % (crossval.mean(), crossval.std() * 2)) #Affichage de la moyenne des 3 CV +la précision
     print "\n"

@@ -19,7 +19,7 @@ class BestParametres(GridSearchCV):
         X = Data.data['X_train'] #Data
         Y = Data.data['Y_train'] #Cible
         
-        parametresDeTest = { 'n_estimators' : [10,50,100,200],
+        parametresDeTest = { 'n_estimators' : [2,5,8,10,50,100],
                             'max_features': ['auto', 'sqrt', 'log2'],
                             'bootstrap': [True, False]}#Les différents paramètres à tester
         
