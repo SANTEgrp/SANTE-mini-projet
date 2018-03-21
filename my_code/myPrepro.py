@@ -3,21 +3,27 @@
 Le preprocessing
 """
 
+from data_manager import DataManager 
 
 from sklearn.base import BaseEstimator
 
 #Pour les fonctions de preprocessing
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import VarianceThreshold
+from sklearn.feature_selection import SelectFromModel
+from sklearn.linear_model import RidgeClassifier
 from sklearn.feature_selection import SelectPercentile
-
+from sklearn.linear_model import SGDClassifier
+from sklearn.feature_selection import SelectFpr
 
 class Preprocessor(BaseEstimator):
 
     def __init__(self):
 
-        self.transformer = SelectPercentile(percentile = 30) #Sélection de la fonction de preprocessing
-
+        self.transformer = SelectFromModel(RidgeClassifier()) #Sélection de la fonction de preprocessing
+        #self.transformer = SelectPercentile(percentile = 30)       
+        #self.transformer = SelectFromModel(SGDClassifier())                      
+        #self.transformer = SelectFpr()
 
     def fit(self, X, y=None):
 
@@ -26,7 +32,7 @@ class Preprocessor(BaseEstimator):
 
     def fit_transform(self, X, y=None):
 
-        return self.transformer.fit_transform(X, y)
+        return self.transformer.fit_transform(X,y)
 
 
     def transform(self, X, y=None):
@@ -40,8 +46,7 @@ if __name__=="__main__":
     output_dir = "../sample_results_submission"
     basename = 'Opioids'
 
-    from data_manager import DataManager 
-
+    
     Data = DataManager(basename, input_dir) #Chargement des données
     
     #Affichage des données non retouchées
@@ -62,6 +67,7 @@ if __name__=="__main__":
     
     
     
+
 
 
 
