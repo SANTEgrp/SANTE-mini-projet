@@ -16,6 +16,8 @@ basename = 'Opioids'
 
 Data = DataManager(basename, input_dir) # Création des données
 
+'''Affichage des donnees originales'''
+
 print("Data non modifiées")
 print Data
     
@@ -28,8 +30,11 @@ plt.xlabel('DonneesX')
 plt.ylabel('DonneesY')
 plt.show()
 
+'''Initialisation du Preprocessing'''
 
 Prepro = Preprocessor() #Initialisation
+
+'''Modification des donnees'''
 
 #Preprocessing sur les données
 Data.data['X_train'] = Prepro.fit_transform(Data.data['X_train'], Data.data['Y_train'])
@@ -38,6 +43,7 @@ Data.data['X_valid'] = Prepro.transform(Data.data['X_valid'])
 
 Data.data['X_test'] = Prepro.transform(Data.data['X_test'])
   
+'''Affichage des donnees modifiees'''
 
 #Affichage des données modifiées + petit graphique pour que ce soit visible
 print("Data modifiées après le Préprocessing")
@@ -47,6 +53,6 @@ import matplotlib.pyplot as plt
 X = Data.data['X_train']
 Y = Data.data['Y_train']
 plt.scatter(X[:,0],X[:,1], c=Y)
-plt.xlabel('SelectKBest1') #a changer !!!!
-plt.ylabel('SelectKBest2') #a changer !!!
+plt.xlabel('SGCDClassifier1')
+plt.ylabel('SGCDClassifier2')
 plt.show()
