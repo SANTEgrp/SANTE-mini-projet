@@ -3,7 +3,6 @@
 Le preprocessing
 """
 
-from data_manager import DataManager 
 
 from sklearn.base import BaseEstimator
 
@@ -42,7 +41,8 @@ if __name__=="__main__":
     output_dir = "../sample_results_submission"
     basename = 'Opioids'
 
-    
+    from data_manager import DataManager 
+
     Data = DataManager(basename, input_dir) #Chargement des données
     
     #Affichage des données non retouchées
