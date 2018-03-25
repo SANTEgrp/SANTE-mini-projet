@@ -92,8 +92,8 @@ if __name__=="__main__":
     
     XTrain_data = D.data['X_train'] #Données d'entrainement
     YTrain_data = D.data['Y_train'] #Donnés de test
-    #fit = Classifier.fit(XTrain_data, YTrain_data) 
-    Classifier.mymodel.fit_transform(XTrain_data, YTrain_data)
+    fit = Classifier.fit(XTrain_data, YTrain_data) 
+    #Classifier.mymodel.fit_transform(XTrain_data, YTrain_data)
     
     #fit #Fit des données d'entrainement et  des données cibles
     

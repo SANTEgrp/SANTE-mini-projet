@@ -8,23 +8,19 @@ from data_manager import DataManager
 from sklearn.base import BaseEstimator
 
 #Pour les fonctions de preprocessing
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import VarianceThreshold
 from sklearn.feature_selection import SelectFromModel
-from sklearn.linear_model import RidgeClassifier
-from sklearn.feature_selection import SelectPercentile
 from sklearn.linear_model import SGDClassifier
-from sklearn.feature_selection import SelectFpr
+from sklearn.svm import LinearSVC
 
 class Preprocessor(BaseEstimator):
 
     def __init__(self):
-
-        self.transformer = SelectFromModel(RidgeClassifier()) #Sélection de la fonction de preprocessing
-        #self.transformer = SelectPercentile(percentile = 30)       
-        #self.transformer = SelectFromModel(SGDClassifier())                      
-        #self.transformer = SelectFpr()
-
+        
+        #Sélection de la fonction de preprocessing    
+        model = SGDClassifier() #algorithme de descente du gradient stochastique
+        #model = LinearSVC()  #2e modèle possible pour le preprocessing
+        self.transformer = SelectFromModel(model)                
+        
     def fit(self, X, y=None):
 
         return self.transformer.fit(X, y)

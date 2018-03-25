@@ -47,6 +47,6 @@ import matplotlib.pyplot as plt
 X = Data.data['X_train']
 Y = Data.data['Y_train']
 plt.scatter(X[:,0],X[:,1], c=Y)
-plt.xlabel('SelectKBest1')
-plt.ylabel('SelectKBest2')
+plt.xlabel('SelectKBest1') #a changer !!!!
+plt.ylabel('SelectKBest2') #a changer !!!
 plt.show()
