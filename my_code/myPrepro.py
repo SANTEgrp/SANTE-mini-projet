@@ -8,8 +8,7 @@ from sklearn.base import BaseEstimator
 
 #Pour les fonctions de preprocessing
 from sklearn.feature_selection import SelectFromModel
-from sklearn.linear_model import SGDClassifier
-from sklearn.svm import LinearSVC
+from sklearn.feature_selection import GenericUnivariateSelect
 
 class Preprocessor(BaseEstimator):
 
@@ -18,11 +17,7 @@ class Preprocessor(BaseEstimator):
         Initialisation de la fonction de preprocessing
         '''
         
-        #Sélection de la fonction de preprocessing    
-        model = SGDClassifier() #algorithme de descente du gradient stochastique
-        #model = LinearSVC()  #2e modèle possible pour le preprocessing
-        self.transformer = SelectFromModel(model)    
-
+        self.transformer = GenericUnivariateSelect(mode ='fwe', param = 1e-01)
                 
         
     def fit(self, X, y=None):
