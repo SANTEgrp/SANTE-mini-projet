@@ -8,6 +8,8 @@ from sklearn.base import BaseEstimator
 
 #Pour les fonctions de preprocessing
 from sklearn.feature_selection import SelectFromModel
+from sklearn.linear_model import SGDClassifier
+from sklearn.svm import LinearSVC
 from sklearn.feature_selection import GenericUnivariateSelect
 
 class Preprocessor(BaseEstimator):
@@ -17,28 +19,35 @@ class Preprocessor(BaseEstimator):
         Initialisation de la fonction de preprocessing
         '''
         
-        self.transformer = GenericUnivariateSelect(mode ='fwe', param = 1e-01)
-                
+        #Sélection de la fonction de preprocessing    
+        #model = SGDClassifier(penalty = 'l1',) #algorithme de descente du gradient stochastique
+        #model = LinearSVC()  #2e modèle possible pour le preprocessing
+        #self.transformer = SelectFromModel(model)    
         
+        #selection des donnee invariantes avec une strategie Family-wise error rate
+        self.transformer = GenericUnivariateSelect(mode = 'fwe',param = 1e-01) #meilleur pour le moment
+        print self.transformer.get_params();
+        
+    '''Centrage des donnees'''
     def fit(self, X, y=None):
-        '''Centrage des donnees'''
 
         return self.transformer.fit(X, y)
 
 
+    '''Appel de fit et transform pour le set d'entrainement'''
     def fit_transform(self, X, y=None):
-        '''Appel de fit et transform pour le set d'entrainement'''
 
         return self.transformer.fit_transform(X,y)
 
 
+    '''Application de la transformation'''
     def transform(self, X, y=None):
-        '''Application de la transformation'''
 
         return self.transformer.transform(X)
     
 
-    '''Execution si on est dans le main'''    
+   
+'''Execution si on est dans le main'''    
     
 if __name__=="__main__":
 
@@ -70,10 +79,3 @@ if __name__=="__main__":
     #On vérifie si il y a des changements
     print("Data modifiées")
     print Data
-    
-    
-    
-
-
-
-

@@ -8,6 +8,8 @@ from sys import path
 path.append("../scoring_program")
 path.append("../ingestion_program")
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import ExtraTreesClassifier
+
 from sklearn.grid_search import GridSearchCV
 from data_manager import DataManager
 
@@ -19,11 +21,11 @@ class BestParametres(GridSearchCV):
         X = Data.data['X_train'] #Data
         Y = Data.data['Y_train'] #Cible
         
-        parametresDeTest = { 'n_estimators' : [2,5,8,10,50,100],
+        parametresDeTest = { 'n_estimators' : [10,50,100,200],
                             'max_features': ['auto', 'sqrt', 'log2'],
                             'bootstrap': [True, False]}#Les différents paramètres à tester
         
-        classifier = GridSearchCV(RandomForestClassifier(), param_grid = parametresDeTest) #Récupère les résultats de la CrossValidation
+        classifier = GridSearchCV(ExtraTreesClassifier(), param_grid = parametresDeTest) #Récupère les résultats de la CrossValidation
         classifier.fit(X, Y) #Fit les résultats
         print "Meilleurs paramètres: "
         print (classifier.best_params_) #Affiche les paramètres qui fournissent la plus haute cross validation

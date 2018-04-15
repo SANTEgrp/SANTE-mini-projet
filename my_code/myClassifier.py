@@ -24,27 +24,9 @@ class model:
         self.num_feat=1
         self.num_labels=1
         self.is_trained=False
-        testParam = 0
         
-        
-        
-        if testParam == 1:
-            #Ces trois initialisations sont utlisées quand on ne soumet pas car Codalab
-            #ne prends pas en charge le "MyBestParametres.py"
-            #Le self.mymodel permet de choisir les meilleurs paramètres fournis par myBestParamètres.py
-            #qui retourne un tableau de taille 3"
-            from MyParametresOpti import BestParametres
-
-            self.params = BestParametres()
-            self.estimators = self.params.BestParam()
-            algo = RandomForestClassifier(n_estimators = self.estimators[0], max_features = self.estimators[1], bootstrap = self.estimators[2])
-            #Ce dernier récupère les trois paramètres donnés par "MyBestParametres.py"
-        
-        
-        
-        else:
-            algo = RandomForestClassifier(n_estimators = 100, max_features = "log2", bootstrap = False)
-            #Ces parametres ont ete trouves en exécutant en local BestParametres.py
+        algo = RandomForestClassifier(n_estimators = 100, max_features = "sqrt", bootstrap = False)
+        #Ces parametres ont ete trouves en exécutant en local BestParametres.py
 
         self.mymodel = Pipeline([('preprocessing',Preprocessor()),('class',algo)])
         #Application du preprocessing
@@ -100,6 +82,25 @@ if __name__=="__main__":
     
     Classifier = model() #Initialisation du classifieur (ici il prend celui de model)
     
+    testParam = 0 #Si on a besoin de trouver les paramètres optimaux
+    if testParam == 1:
+            #Ces trois initialisations sont utlisées quand on ne soumet pas car Codalab
+            #ne prends pas en charge le "MyBestParametres.py"
+            #Le self.mymodel permet de choisir les meilleurs paramètres fournis par myBestParamètres.py
+            #qui retourne un tableau de taille 3"
+            from MyParametresOpti import BestParametres
+            params = BestParametres()
+            estimators = params.BestParam()
+            print "------------------------Meilleurs paramètres-------------------------"
+            print "NEstimators: " + str(estimators[0])
+            print "Max_features: " + str(estimators[1])
+            print "Bootsrap: " + str(estimators[2])
+            print "--------------------------------------------------------------"
+            #algo = RandomForestClassifier(n_estimators = estimators[0], max_features = estimators[1], bootstrap = estimators[2])
+            #Ce dernier récupère les trois paramètres donnés par "MyBestParametres.py"
+   
+    
+    
     D = DataManager(basename, input_dir) #Initialisation des données utilisées par le classifieur
     print D #Affichage de test pour voir les données prises sont les bonnes
     
@@ -133,8 +134,8 @@ if __name__=="__main__":
     from sklearn.model_selection import cross_val_score
     
     print "Cross Validation: "
-    clf = RandomForestClassifier(n_estimators = 100, max_features = "log2", bootstrap = False)
-    crossval = cross_val_score(clf, XTrain_data, YTrain_data, cv = 10) #Calcule de la cross validation, 3 fois
+    clf = RandomForestClassifier(n_estimators = 100, max_features = "sqrt", bootstrap = False)
+    crossval = cross_val_score(clf, XTrain_data, YTrain_data, cv = 3, scoring = 'roc_auc') #Calcule de la cross validation, 3 fois
     print crossval #Affichage des 3 cross validations
     print("Precision: %0.4f (+/- %0.04f)" % (crossval.mean(), crossval.std() * 2)) #Affichage de la moyenne des 3 CV +la précision
     print "\n"
@@ -153,6 +154,4 @@ if __name__=="__main__":
     
     
     
-        
-        
         
